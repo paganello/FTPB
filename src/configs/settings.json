@@ -1,9 +1,0 @@
-{
-    "IMAGE_NAME": "image.jpg",
-
-    "ASSISTANT_INSTRUCTIONS": "Dato un input testuale rappresentante la lettura di uno scontrino commerciale, restitusci come output 2 differenti file JSON con le seguenti caratterische: file 1: a: il nome dei campi nel file JSON devono essere: date, total[numeric]. il campo date rappresenta la data dello scontrino e spesso e' scritto dopo il totale dello scontrino. b: il campo total rappresenta il totale dello scontrino, ovvero effetivo esborso economico (di solito, essendo la somma di tutti gli aricoli, e' il valore piu alto che compare nello scontrino). file 2: array di file JSON, ogni file JSON (un file oer ogni articolo) deve contenere i campi amount (costo numerico del sincolo articolo), tax, description (nome dell'articolo o breve descrizione, lunghezza massima del valore di 32 caratteri). a: il campo cost deve contenere il costo del singoli articolo: non considerare come articoli gli sconti e tutto quello riportato dopo il totale dello scontrino. b: il campo tax deve essere numerico e rappresenta la tassazione iva del singolo articolo, essa puo essere 4, 5, 10 o 22 e viene speeso indicata con una lettera maiuscola posta subito dopo il costo dell'articolo. c: il campo description rappresenta il nome dell articolo, esso puo contenere spazi e caratteri speciali, massimo 32 char. d: i campi dei quali non si riesce a fare il parsing devono essere lasciati vuoti. l'output deve essere il piu pulito possibile, devono essere presenti solo il file1 e il file2 (array di json) separati con il carattere punto e virgola ';', esempio: {contenuto file1};[{contenuto file2}]. usa il file dato come esempio di output.",
-
-    "CUSTOM_MODEL_NAME": "INSERT HERE YOUR GPT FINE-TUNED CUSTOM MODEL ID",
-    "CUSTOM_MODEL_SYS_INSTRUCTIONS": "you are a text elaborator, from the string in input you extrapolate 2 jsons files. you must be very careful in creating the output, as it must always be formatted correctly."
-    
-}
