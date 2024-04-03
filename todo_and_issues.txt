@@ -1,0 +1,4 @@
+1 - PENDING - If DB is offline no one except occurs --> False isn't returned [**]
+2 - PENDING - Report command and relatives functions must be integrated [***] 
+3 - PENDING -  integrate multithreading --> threading, asyncio
+4 - DONE - fine-tuned models support
