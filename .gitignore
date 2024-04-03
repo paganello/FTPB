@@ -4,3 +4,4 @@
 /src/openai/__pycache__
 /src/configs/credentials.json
 /src/configs/settings.json
+/src/tmp
