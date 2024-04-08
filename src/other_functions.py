@@ -98,15 +98,18 @@ def verify_formatted_text_input(input_json):
     
 def json_reformatter(payload):
 
+    # Remove all the unwanted characters
     fields = payload.strip()
     fields = payload.strip("'")
     fields = fields.strip('\n')
     fields = fields.strip('\n\n')
 
+    # Split the string into two parts
     fields = payload.split(';')
 
-    print (fields)
+    print (fields) #debug
 
+    # Load the JSON objects
     j1 = json.loads(fields[0])
     j2 = json.loads(fields[1])
 
@@ -114,11 +117,14 @@ def json_reformatter(payload):
     print("-----")
     print(j2)
 
-    if j1["date"] == '' or j1["date"] == ' ':
+    # Check if the date is empty, if so, add the current datetime
+    if j1["date"] == "" or j1["date"] == " ":
         j1["date"] = get_formatted_datetime()
 
+    # Separe the JSON objects put they in a list
     jFiles = [j1]
     for j2_file in j2:
+
         jFiles.append(j2_file)
 
 
