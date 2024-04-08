@@ -43,7 +43,7 @@ async def manage_text_message(update: Update, context: CallbackContext):
     else:
 
         # Use GPT-3.5 --> reform text to JSON
-        d = await OpenaiTextProcessor.t_make_request_using_custom_model(text)
+        d = OpenaiTextProcessor.t_make_request_using_custom_model(text)
 
         jsons = other_functions.json_reformatter(d)
 

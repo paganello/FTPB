@@ -42,7 +42,6 @@ class OpenaiTextProcessor:
         self.file = file
 
 
-
     # Create the assistant
     def create_assistant(self, name, instructions):
         
@@ -60,7 +59,6 @@ class OpenaiTextProcessor:
             print(f"AssID:::: {self.assistant.id}")
 
 
-
     # Create the thread
     def create_thread(self):
         
@@ -70,7 +68,6 @@ class OpenaiTextProcessor:
             OpenaiTextProcessor.thread_id = thread.id
             self.thread = thread
             print(f"ThreadID:::: {self.thread.id}")
-
 
 
     # Add a message to the thread
@@ -85,7 +82,6 @@ class OpenaiTextProcessor:
             )
 
 
-
     # Run the assistant
     def run_assistant(self):
 
@@ -96,7 +92,6 @@ class OpenaiTextProcessor:
                 assistant_id= self.assistant.id,
                 temperature= 0.1,
             )
-
 
 
     # Process the messages
@@ -121,7 +116,6 @@ class OpenaiTextProcessor:
             #    role = msg.role
             #    content = msg.content[0].text.value
             #    print(f"{role.capitalize()} => {content}")
-
 
 
     # Wait for the completion
@@ -159,7 +153,6 @@ class OpenaiTextProcessor:
 
         self.response = completion.choices[0].message.content
     
-
 
     # Return the elaborated text
     def get_response(self):
