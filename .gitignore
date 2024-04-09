@@ -1,7 +1,7 @@
 .git
 .vscode
 src/__pycache__/
-
+src/utils/__pycache__/
 src/configs/
 src/tmp/
 
