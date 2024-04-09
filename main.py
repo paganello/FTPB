@@ -5,13 +5,12 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Cal
 import os
 import sys
 
-sys.path.append('./src')
-import DataBaseHandler
-import AzureImageProcessor
-import OpenaiTextProcessor
-import utils.download_utils as download_utils
-import utils.dir_and_data_getters as dir_and_data_getters
-import utils.json_consistency_helper as json_consistency_helper
+import src.DataBaseHandler as DataBaseHandler
+import src.AzureImageProcessor as AzureImageProcessor
+import src.OpenaiTextProcessor as OpenaiTextProcessor
+import src.utils.download_utils as download_utils
+import src.utils.dir_and_data_getters as dir_and_data_getters
+import src.utils.json_consistency_helper as json_consistency_helper
 
 import logging
 logging.basicConfig(
