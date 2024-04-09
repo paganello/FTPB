@@ -8,10 +8,10 @@ import sys
 sys.path.append('./src')
 import DataBaseHandler
 import AzureImageProcessor
-import other_functions
-
-sys.path.append('./src/openai')
 import OpenaiTextProcessor
+import utils.download_utils as download_utils
+import utils.dir_and_data_getters as dir_and_data_getters
+import utils.json_consistency_helper as json_consistency_helper
 
 import logging
 logging.basicConfig(
@@ -28,10 +28,10 @@ async def manage_text_message(update: Update, context: CallbackContext):
 
     # Get Updates and list words
     text = update.message.text
-    json_file = other_functions.text_slicer(text)
+    json_file = json_consistency_helper.text_slicer(text)
 
     # Verify text format
-    if(other_functions.verify_formatted_text_input(json_file)):
+    if(json_consistency_helper.verify_formatted_text_input(json_file)):
 
         # if correct try to update the DB
         if(DataBaseHandler.update(json_file)):
@@ -45,7 +45,7 @@ async def manage_text_message(update: Update, context: CallbackContext):
         # Use GPT-3.5 --> reform text to JSON
         d = OpenaiTextProcessor.t_make_request_using_custom_model(text)
 
-        jsons = other_functions.json_reformatter(d)
+        jsons = json_consistency_helper.json_reformatter(d)
 
         for json_file in jsons:  
 
@@ -64,15 +64,15 @@ async def manage_image_message(update: Update, context: CallbackContext):
     file = await context.bot.get_file(file_id)
 
     # Download the file
-    if other_functions.download_file(file.file_path, other_functions.get_settings("IMAGE_NAME")):
+    if download_utils.download_file(file.file_path, dir_and_data_getters.get_settings("IMAGE_NAME")):
         await update.message.reply_text("image received")
 
-    text = await AzureImageProcessor.i_make_request(other_functions.get_settings("IMAGE_NAME"))
+    text = await AzureImageProcessor.i_make_request(dir_and_data_getters.get_settings("IMAGE_NAME"))
 
     # Start image elaboration
     d = OpenaiTextProcessor.t_make_request_using_custom_model(text)
 
-    jsons = other_functions.json_reformatter(d)
+    jsons = json_consistency_helper.json_reformatter(d)
 
     for json_file in jsons:
         # Verify the list
@@ -81,13 +81,13 @@ async def manage_image_message(update: Update, context: CallbackContext):
         else:
             await update.message.reply_text("Your input is not valid. Please, read the guide and try again.")
 
-    os.remove(other_functions.get_settings("IMAGE_NAME"))
+    os.remove(dir_and_data_getters.get_settings("IMAGE_NAME"))
 
 
             
 def main():
 
-    application = ApplicationBuilder().token(other_functions.get_credentials('TELEGRAM_TOKEN')).build()
+    application = ApplicationBuilder().token(dir_and_data_getters.get_credentials('TELEGRAM_TOKEN')).build()
 
     # Chat commands
     application.add_handler(CommandHandler('start', start))

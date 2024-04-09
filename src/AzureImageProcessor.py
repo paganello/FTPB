@@ -1,7 +1,7 @@
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
-import other_functions
+import utils.dir_and_data_getters as dir_and_data_getters
 import time
 
 #overload the class for image processing with Azure
@@ -44,7 +44,7 @@ class RemoteImageProcessor:
     
 
 async def i_make_request(img_path):
-    img_processor = RemoteImageProcessor(other_functions.get_credentials('AZURE_API_KEY'), other_functions.get_credentials('AZURE_ENDPOINT'), img_path)
+    img_processor = RemoteImageProcessor(dir_and_data_getters.get_credentials('AZURE_API_KEY'), dir_and_data_getters.get_credentials('AZURE_ENDPOINT'), img_path)
     img_processor.start_image_processing()
 
     while img_processor.get_image_processing_status() == OperationStatusCodes.running:
