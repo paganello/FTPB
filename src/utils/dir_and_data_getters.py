@@ -9,7 +9,7 @@ def get_current_dir():
 # Credential & Settings getters
 def get_credentials(name):
 
-    file = open(get_current_dir() + '/configs/credentials.json', 'r')
+    file = open(get_current_dir() + '../configs/credentials.json', 'r')
     cred = json.load(file)
 
     if name == "TELEGRAM_TOKEN":
@@ -33,7 +33,7 @@ def get_credentials(name):
     
 
 def get_settings(name):
-    file = open(get_current_dir() + '/configs/settings.json', 'r')
+    file = open(get_current_dir() + '../configs/settings.json', 'r')
     cred = json.load(file)
     
     if name == "IMAGE_NAME":
