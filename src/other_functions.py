@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from datetime import datetime
+import datetime_utils
 
 # Path getter
 def get_current_dir():
@@ -33,6 +33,7 @@ def get_credentials(name):
     else:
         return None
     
+
 def get_settings(name):
     file = open(get_current_dir() + '/configs/settings.json', 'r')
     cred = json.load(file)
@@ -68,7 +69,7 @@ def text_slicer(text):
     if len(list) < 2:
         if float(list[0]):
             result = {
-                "date": get_formatted_datetime(),
+                "date": datetime_utils.get_formatted_datetime(),
                 "total": list[0]
             }
     else:
@@ -80,6 +81,7 @@ def text_slicer(text):
     print(result)
     print("text_slicer executed")
     return result
+
 
 def verify_formatted_text_input(input_json):
 
@@ -96,6 +98,7 @@ def verify_formatted_text_input(input_json):
     else:
         return True
     
+
 def json_reformatter(payload):
 
     # Remove all the unwanted characters
@@ -107,19 +110,13 @@ def json_reformatter(payload):
     # Split the string into two parts
     fields = payload.split(';')
 
-    print (fields) #debug
-
     # Load the JSON objects
     j1 = json.loads(fields[0])
     j2 = json.loads(fields[1])
 
-    print(j1)
-    print("-----")
-    print(j2)
-
     # Check if the date is empty, if so, add the current datetime
     if j1["date"] == "" or j1["date"] == " ":
-        j1["date"] = get_formatted_datetime()
+        j1["date"] = datetime_utils.get_formatted_datetime()
 
     # Separe the JSON objects put they in a list
     jFiles = [j1]
@@ -127,50 +124,8 @@ def json_reformatter(payload):
 
         jFiles.append(j2_file)
 
-
-    print(jFiles[1]["amount"])
     return jFiles
 
-# Current time getter
-def get_current_datetime():
-    try:
-        # execute HTTP request to get the current time
-        response = requests.get("http://worldtimeapi.org/api/ip")
-        data = response.json()
-        datetime_str = data['datetime']
-
-        # Remove milliseconds from the datetime string
-        return datetime_str.split('.')[0] 
-    
-    except requests.RequestException as e:
-
-        print("Errore durante la richiesta HTTP:", e)
-        return None
-
-def format_datetime(datetime_str):
-    try:
-
-        # Analizza la stringa di data e ora in un oggetto datetime
-        dt_obj = datetime.fromisoformat(datetime_str)
-
-        # Formatta l'oggetto datetime nel formato desiderato
-        formatted_datetime = dt_obj.strftime('%Y-%m-%d %H:%M')
-        return formatted_datetime
-    
-    except ValueError as e:
-        return None
-    
-def get_formatted_datetime():
-
-    # Ottieni la data e l'ora correnti
-    current_datetime = get_current_datetime()
-
-    # Formatta la data e l'ora correnti
-    if current_datetime:
-        return format_datetime(current_datetime)
-    else:
-        return None
-    
 
 def download_file(url, file_path):
     
