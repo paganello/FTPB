@@ -1,6 +1,6 @@
 from openai import OpenAI
 import time
-import utils.dir_and_data_getters as dir_and_data_getters
+from src.utils import dir_and_data_getters
 
 #overload the class for text processing with OpenAI
 class OpenaiTextProcessor:

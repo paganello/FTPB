@@ -2,15 +2,9 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackContext, filters
 
-import os
-import sys
+from src import DataBaseHandler, AzureImageProcessor, OpenaiTextProcessor
+from src.utils import download_utils, dir_and_data_getters, json_consistency_helper
 
-import src.DataBaseHandler as DataBaseHandler
-import src.AzureImageProcessor as AzureImageProcessor
-import src.OpenaiTextProcessor as OpenaiTextProcessor
-import src.utils.download_utils as download_utils
-import src.utils.dir_and_data_getters as dir_and_data_getters
-import src.utils.json_consistency_helper as json_consistency_helper
 
 import logging
 logging.basicConfig(
@@ -62,11 +56,15 @@ async def manage_image_message(update: Update, context: CallbackContext):
     # Get the file object
     file = await context.bot.get_file(file_id)
 
+    # Get the last image name and dir
+    last_img_name = dir_and_data_getters.create_timebased_img_name()
+    last_img_dir = dir_and_data_getters.get_current_dir() + "/../images/" + last_img_name
+
     # Download the file
-    if download_utils.download_file(file.file_path, dir_and_data_getters.get_settings("IMAGE_NAME")):
+    if download_utils.download_file(file.file_path, last_img_dir):
         await update.message.reply_text("image received")
 
-    text = await AzureImageProcessor.i_make_request(dir_and_data_getters.get_settings("IMAGE_NAME"))
+    text = await AzureImageProcessor.i_make_request(last_img_dir)
 
     # Start image elaboration
     d = OpenaiTextProcessor.t_make_request_using_custom_model(text)
@@ -79,8 +77,6 @@ async def manage_image_message(update: Update, context: CallbackContext):
             await update.message.reply_text("done ")
         else:
             await update.message.reply_text("Your input is not valid. Please, read the guide and try again.")
-
-    os.remove(dir_and_data_getters.get_settings("IMAGE_NAME"))
 
 
             

@@ -1,7 +1,7 @@
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
-import utils.dir_and_data_getters as dir_and_data_getters
+from src.utils import dir_and_data_getters
 import time
 
 #overload the class for image processing with Azure

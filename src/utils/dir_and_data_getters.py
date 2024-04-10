@@ -1,6 +1,8 @@
 import os
 import json
 
+from src.utils import datetime_utils 
+
 # Path getter
 def get_current_dir():
     return os.path.dirname(os.path.realpath(__file__))
@@ -55,3 +57,6 @@ def get_settings(name):
     else:
         return None
     
+
+def create_timebased_img_name():
+    return str(datetime_utils.get_current_datetime()) + ".jpg"

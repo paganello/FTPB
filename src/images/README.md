@@ -1,0 +1,1 @@
+In this folder will stored all receipt images sent on telegram

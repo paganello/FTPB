@@ -1,6 +1,6 @@
 
 import json
-import utils.datetime_utils as datetime_utils
+from src.utils import datetime_utils
 
 # Reformat and input verifier
 # Only "[date] [total]" or "[total]" are accepted
