@@ -40,12 +40,11 @@ async def manage_text_message(update: Update, context: CallbackContext):
 
         jsons = json_consistency_helper.json_reformatter(d)
 
-        for json_file in jsons:  
+        if (DataBaseHandler.update(jsons)):
+            await update.message.reply_text("Done")
+        else:
+            await update.message.reply_text("error")
 
-            if(DataBaseHandler.update(json_file)):
-                await update.message.reply_text("done")
-            else:
-                await update.message.reply_text("db error")
 
 
 async def manage_image_message(update: Update, context: CallbackContext):
@@ -71,12 +70,10 @@ async def manage_image_message(update: Update, context: CallbackContext):
 
     jsons = json_consistency_helper.json_reformatter(d)
 
-    for json_file in jsons:
-        # Verify the list
-        if(DataBaseHandler.update(json_file)):
-            await update.message.reply_text("done ")
-        else:
-            await update.message.reply_text("Your input is not valid. Please, read the guide and try again.")
+    if(DataBaseHandler.update(jsons, last_img_name)):
+        await update.message.reply_text("done ")
+    else:
+        await update.message.reply_text("error")
 
 
             

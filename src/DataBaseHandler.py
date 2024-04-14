@@ -3,6 +3,7 @@ import json
 
 class DataBaseHandler:
     
+    # Constructor
     def __init__(self, db_psw, db_addr, db_user, db_name):
         self.db_psw = db_psw
         self.db_user = db_user
@@ -10,6 +11,7 @@ class DataBaseHandler:
         self.db_name = db_name
         self.connection = None
     
+    # Connect to the DB
     def connect(self):
         try:
             self.connection = mysql.connector.connect(
@@ -23,47 +25,33 @@ class DataBaseHandler:
         except mysql.connector.Error as err:
             return False
     
+    # Disconnect from the DB
     def disconnect(self):
         if self.connection:
             self.connection.close()
 
-    def execute_query(self, json_file):
-
-        s = json.dumps(json_file)
-        json_file = json.loads(s)
+    # Execute a query
+    def execute_querys(self, querys):
         
         try: 
-
             cursor = self.connection.cursor()
-        except mysql.connector.Error as err:
-            return False
-        
-        try:
-            print (len(json_file))
-
-            if len(json_file) == 2 and "date" in json_file and "total" in json_file:
-                query = "INSERT INTO transations (date, total) VALUES ('{}', '{}');".format(json_file["date"], json_file["total"])
-                print (query)
-                cursor.execute(query)
-            
-            
-            if len(json_file) == 3 and "amount" in json_file and "tax" in json_file and "description" in json_file:
-                id = self.get_last_id()
-                query = "INSERT INTO articles_in_transations (ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(id, json_file["amount"], json_file["tax"], json_file["description"])
-                print (query)
-                cursor.execute(query)
-        
-            self.connection.commit()
-            return True
 
         except mysql.connector.Error as err:
-            self.connection.rollback()
             return False
 
-        finally:
+        for query in querys:
+            cursor.execute(query)
+
+        if self.connection.commit():
             cursor.close()
+            return True
+        
+        else:
+            cursor.close()
+            return False
 
 
+    # Fetch data
     def fetch_data(self, query):
         cursor = self.connection.cursor()
         try:
@@ -77,24 +65,58 @@ class DataBaseHandler:
         finally:
             cursor.close()
     
+    # Get the last ID
     def get_last_id(self):
         query = "SELECT MAX(id) FROM transations;"
         result = self.fetch_data(query)
         return result[0][0]
 
 
-def update(json_file):
+def update(jsons, img_name=None):
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
     db.connect()
 
-    if db.execute_query(json_file):
+    querys = create_query_array(db, jsons, img_name)
+
+    if db.execute_querys(querys):
         db.disconnect()
         return True
+    
     else:
         db.disconnect()
         return False
     
+
+def create_query_array(db, jsons, img_name=None):
+
+    s = json.dumps(json_file)
+    json_file = json.loads(s)
+        
+    querys = []
+
+    for json_file in jsons:
+
+        if "date" in json_file and "total" in json_file:
+
+            if "recipt_ID" in json_file:
+                
+                if img_name:
+                    querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
+                
+                else:
+                    querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
+
+            else:
+                querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', 'NULL', 'NULL');".format(json_file["date"], json_file["total"]))
+                
+                
+        if "amount" in json_file and "tax" in json_file and "description" in json_file:
+            transaction_ID = db.get_last_id()
+            querys.append("INSERT INTO articles (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
     
+    return querys
+
+
 def fetch_data(query):
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
     db.connect()
