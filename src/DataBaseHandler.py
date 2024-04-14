@@ -65,12 +65,7 @@ class DataBaseHandler:
 
         finally:
             cursor.close()
-    
-    # Get the last ID
-    def get_last_id(self):
-        query = "SELECT MAX(id) FROM transations;"
-        result = self.fetch_data(query)
-        return result[0][0]
+
 
 def update(jsons, img_name=None):
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
@@ -127,3 +122,27 @@ def fetch_data(query):
     db.disconnect()
 
     return result
+
+
+def get_last_id():
+    query = "SELECT MAX(id) FROM transations;"
+    result = fetch_data(query)
+    if result[0][0]:
+        return result[0][0]
+    else:
+        if init_db():
+            return get_last_id()
+        
+
+def init_db():
+    db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
+    db.connect()
+
+    query = "INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES (NULL, NULL, NULL, NULL);"
+    if db.execute_querys(query):
+        return True
+    else: 
+        return False
+
+
+

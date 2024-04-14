@@ -5,4 +5,4 @@
 5 - IMPLEMENTING - add receipt img database auto storing
 6 - IMPLEMENTING - fine-tuning file must be implemented with new dataset elements
 
-- modify fine tuning dataset with receipt ID examples 
+- update DBHandler (still not working)
