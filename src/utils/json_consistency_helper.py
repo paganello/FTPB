@@ -60,7 +60,7 @@ def json_reformatter(payload):
     j3 = json.loads(fields[2])
 
     # Check if the date is empty, if so, add the current datetime
-    if j1["date"] == "" or j1["date"] == " ":
+    if j1["date"] == "" or j1["date"] == "NULL":
         j1["date"] = datetime_utils.get_formatted_datetime()
 
     # Separe the JSON objects put they in a list

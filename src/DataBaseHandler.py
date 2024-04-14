@@ -109,7 +109,7 @@ def create_query_array(db, jsons, img_name=None):
 
         if "amount" in json_file and "tax" in json_file and "description" in json_file:
             
-            querys.append("INSERT INTO articles (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
+            querys.append("INSERT INTO article (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
 
         if "name" in json_file and "address" in json_file and "city" in json_file and "VAT" in json_file:
                 
