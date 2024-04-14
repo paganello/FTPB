@@ -101,19 +101,25 @@ def create_query_array(db, jsons, img_name=None):
             if "recipt_ID" in json_file:
                 
                 if img_name:
-                    querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
+                    querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
                 
                 else:
-                    querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
+                    querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
 
             else:
-                querys.append("INSERT INTO transations (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', 'NULL', 'NULL');".format(json_file["date"], json_file["total"]))
+                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', 'NULL', 'NULL');".format(json_file["date"], json_file["total"]))
                 
-                
+        transaction_ID = db.get_last_id()
+
         if "amount" in json_file and "tax" in json_file and "description" in json_file:
-            transaction_ID = db.get_last_id()
+            
             querys.append("INSERT INTO articles (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
-    
+
+        if "name" in json_file and "address" in json_file and "city" in json_file and "VAT" in json_file:
+                
+            querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES ('{}', '{}', '{}', '{}', '{}');".format(transaction_ID, json_file["name"], json_file["address"], json_file["city"], json_file["VAT"]))
+
+
     return querys
 
 
