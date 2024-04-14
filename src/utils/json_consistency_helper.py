@@ -57,16 +57,17 @@ def json_reformatter(payload):
     # Load the JSON objects
     j1 = json.loads(fields[0])
     j2 = json.loads(fields[1])
+    j3 = json.loads(fields[2])
 
     # Check if the date is empty, if so, add the current datetime
     if j1["date"] == "" or j1["date"] == " ":
         j1["date"] = datetime_utils.get_formatted_datetime()
 
     # Separe the JSON objects put they in a list
-    jFiles = [j1]
-    for j2_file in j2:
+    jFiles = [j1, j2]
+    for j3_file in j3:
 
-        jFiles.append(j2_file)
+        jFiles.append(j3_file)
 
     return jFiles
 
