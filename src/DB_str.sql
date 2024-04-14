@@ -2,8 +2,8 @@ CREATE TABLE transaction (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     date CHAR(16),
     total FLOAT,
-    receipt_ID CHAR(9),
-    receipt_file_name CHAR(21)
+    receipt_ID CHAR(16),
+    receipt_file_name CHAR(23)
 );
 
 CREATE TABLE good (

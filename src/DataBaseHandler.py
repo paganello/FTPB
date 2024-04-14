@@ -40,6 +40,7 @@ class DataBaseHandler:
             return False
 
         for query in querys:
+            print(query)
             cursor.execute(query)
 
         if self.connection.commit():
@@ -71,7 +72,6 @@ class DataBaseHandler:
         result = self.fetch_data(query)
         return result[0][0]
 
-
 def update(jsons, img_name=None):
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
     db.connect()
@@ -88,21 +88,20 @@ def update(jsons, img_name=None):
     
 
 def create_query_array(db, jsons, img_name=None):
-
-    s = json.dumps(json_file)
-    json_file = json.loads(s)
         
     querys = []
 
+    print(jsons)
+
     for json_file in jsons:
 
-        if "date" in json_file and "total" in json_file and "recipt_ID" in json_file:
+        if "date" in json_file and "total" in json_file and "receipt_ID" in json_file:
 
             if img_name:
-                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
+                querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
                 
             else:
-                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
+                querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
 
                 
         transaction_ID = db.get_last_id()
@@ -115,6 +114,7 @@ def create_query_array(db, jsons, img_name=None):
                 
             querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES ('{}', '{}', '{}', '{}', '{}');".format(transaction_ID, json_file["name"], json_file["address"], json_file["city"], json_file["VAT"]))
 
+    print(querys)
 
     return querys
 
