@@ -96,18 +96,14 @@ def create_query_array(db, jsons, img_name=None):
 
     for json_file in jsons:
 
-        if "date" in json_file and "total" in json_file:
+        if "date" in json_file and "total" in json_file and "recipt_ID" in json_file:
 
-            if "recipt_ID" in json_file:
+            if img_name:
+                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
                 
-                if img_name:
-                    querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
-                
-                else:
-                    querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
-
             else:
-                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', 'NULL', 'NULL');".format(json_file["date"], json_file["total"]))
+                querys.append("INSERT INTO transation (date, total, receipt_ID, recipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
+
                 
         transaction_ID = db.get_last_id()
 
