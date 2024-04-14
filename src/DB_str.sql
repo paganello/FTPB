@@ -2,7 +2,7 @@ CREATE TABLE transaction (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     date CHAR(16),
     total FLOAT,
-    receipt_ID CHAR(16),
+    receipt_ID CHAR(9),
     receipt_file_name CHAR(23)
 );
 
@@ -21,6 +21,6 @@ CREATE TABLE store (
     name CHAR(64),
     address CHAR(64),
     city CHAR(64),
-    VAT CHAR(9),
+    VAT CHAR(16),
     FOREIGN KEY (transaction_ID) REFERENCES transaction(ID)
 );
