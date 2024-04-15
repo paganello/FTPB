@@ -3,8 +3,14 @@ from datetime import datetime
 
 # Current time getter
 def get_current_datetime():
+    """
+    Retrieves the current datetime from the worldtimeapi.org.
+
+    Returns:
+    - str or None: The current datetime string or None if an error occurs.
+    """
     try:
-        # execute HTTP request to get the current time
+        # Execute HTTP request to get the current time
         response = requests.get("http://worldtimeapi.org/api/ip")
         data = response.json()
         datetime_str = data['datetime']
@@ -13,18 +19,25 @@ def get_current_datetime():
         return datetime_str.split('.')[0] 
     
     except requests.RequestException as e:
-
-        print("Errore durante la richiesta HTTP:", e)
+        print("Error during HTTP request:", e)
         return None
 
 
 def format_datetime(datetime_str):
-    try:
+    """
+    Formats the input datetime string into the desired format.
 
-        # Analizza la stringa di data e ora in un oggetto datetime
+    Args:
+    - datetime_str (str): The input datetime string.
+
+    Returns:
+    - str or None: The formatted datetime string or None if the input is invalid.
+    """
+    try:
+        # Parse the datetime string into a datetime object
         dt_obj = datetime.fromisoformat(datetime_str)
 
-        # Formatta l'oggetto datetime nel formato desiderato
+        # Format the datetime object into the desired format
         formatted_datetime = dt_obj.strftime('%Y-%m-%d %H:%M')
         return formatted_datetime
     
@@ -33,13 +46,17 @@ def format_datetime(datetime_str):
     
 
 def get_formatted_datetime():
+    """
+    Retrieves the current datetime and formats it into the desired format.
 
-    # Ottieni la data e l'ora correnti
+    Returns:
+    - str or None: The formatted current datetime string or None if an error occurs.
+    """
+    # Get the current date and time
     current_datetime = get_current_datetime()
 
-    # Formatta la data e l'ora correnti
+    # Format the current date and time
     if current_datetime:
         return format_datetime(current_datetime)
     else:
         return None
-    

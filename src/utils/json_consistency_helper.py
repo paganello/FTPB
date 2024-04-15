@@ -1,4 +1,3 @@
-
 import json
 from src.utils import datetime_utils
 
@@ -7,9 +6,18 @@ from src.utils import datetime_utils
 
 # Text format verifier
 def text_slicer(text):
+    """
+    Slices the input text into date and total, returns a dictionary.
+
+    Args:
+    - text (str): The input text.
+
+    Returns:
+    - dict: A dictionary containing date and total.
+    """
     list = text.split()
 
-    # Se ci sono meno di 2 parole, aggiungi stringhe vuote per gli elementi mancanti
+    # If there are less than 2 words, add empty strings for the missing elements
     if len(list) < 2:
         if float(list[0]):
             result = {
@@ -28,14 +36,22 @@ def text_slicer(text):
 
 
 def verify_formatted_text_input(input_json):
+    """
+    Verifies the format of the input JSON.
 
-    # Verifica se il primo elemento è una stringa
+    Args:
+    - input_json (dict): The input JSON object.
+
+    Returns:
+    - bool: True if the format is correct, False otherwise.
+    """
+    # Check if the first element is a string
     if not isinstance(input_json["date"], str):
         print("date is not a string")
         return False
     
-    # Verifica se il secondo elemento è float
-    elif not isinstance(input_json["total"], float) or not isinstance(input_json["total"], int):
+    # Check if the second element is float or int
+    elif not isinstance(input_json["total"], float) and not isinstance(input_json["total"], int):
         print("total is not a float or int")
         return False
     
@@ -44,7 +60,15 @@ def verify_formatted_text_input(input_json):
     
 
 def json_reformatter(payload):
+    """
+    Reformat and load the JSON objects from the payload string.
 
+    Args:
+    - payload (str): The input payload string.
+
+    Returns:
+    - list: A list containing the reformatted JSON objects.
+    """
     # Remove all the unwanted characters
     fields = payload.strip()
     fields = payload.strip("'")
@@ -63,13 +87,10 @@ def json_reformatter(payload):
     if j1["date"] == "" or j1["date"] == "NULL":
         j1["date"] = datetime_utils.get_formatted_datetime()
 
-    # Separe the JSON objects put they in a list
+    # Separate the JSON objects and put them in a list
     jFiles = [j1, j2]
     for j3_file in j3:
 
         jFiles.append(j3_file)
 
     return jFiles
-
-
-            

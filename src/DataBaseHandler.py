@@ -1,5 +1,4 @@
 import mysql.connector
-import json
 
 class DataBaseHandler:
     
@@ -64,15 +63,16 @@ class DataBaseHandler:
         except mysql.connector.Error as err:
             return False
 
+        print(querys)
         for query in querys:
 
-            try: 
+            #try: 
                 cursor.execute(query)
                 print(query)
 
-            except mysql.connector.Error as err:
-                cursor.close()
-                return False
+            #except mysql.connector.Error as err:
+            #    cursor.close()
+            #    return False
 
         try: 
             self.connection.commit()
