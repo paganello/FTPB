@@ -40,18 +40,26 @@ class DataBaseHandler:
             return False
 
         for query in querys:
-            print(query)
-            cursor.execute(query)
 
-        if self.connection.commit():
+            try: 
+                cursor.execute(query)
+                print(query)
+
+            except mysql.connector.Error as err:
+                cursor.close()
+                return False
+
+        try: 
+            self.connection.commit()
             cursor.close()
+
             return True
         
-        else:
+        except mysql.connector.Error as err:
             cursor.close()
+
             return False
-
-
+        
     # Fetch data
     def fetch_data(self, query):
         cursor = self.connection.cursor()
@@ -67,26 +75,36 @@ class DataBaseHandler:
             cursor.close()
 
 
+
 def update(jsons, img_name=None):
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
     db.connect()
 
-    querys = create_query_array(db, jsons, img_name)
-
-    if db.execute_querys(querys):
-        db.disconnect()
-        return True
+    transaction_query = create_query_array(jsons, img_name)
     
+    if db.execute_querys(transaction_query):
+
+        jsons.pop(0)
+        querys = create_query_array(jsons)
+
+        if db.execute_querys(querys):
+            db.disconnect()
+            return True
+    
+        else:
+            db.disconnect()
+            return False
+        
     else:
         db.disconnect()
         return False
     
 
-def create_query_array(db, jsons, img_name=None):
+def create_query_array(jsons, img_name=None):
         
     querys = []
 
-    print(jsons)
+    transaction_ID = None
 
     for json_file in jsons:
 
@@ -94,22 +112,26 @@ def create_query_array(db, jsons, img_name=None):
 
             if img_name:
                 querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
-                
+
             else:
                 querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
 
-                
-        transaction_ID = db.get_last_id()
+            return querys
+        
 
         if "amount" in json_file and "tax" in json_file and "description" in json_file:
             
-            querys.append("INSERT INTO article (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
+            if transaction_ID is None:
+                transaction_ID = get_last_id()
+            
+            querys.append("INSERT INTO good (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
 
         if "name" in json_file and "address" in json_file and "city" in json_file and "VAT" in json_file:
                 
+            if transaction_ID is None:
+                transaction_ID = get_last_id()
+            
             querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES ('{}', '{}', '{}', '{}', '{}');".format(transaction_ID, json_file["name"], json_file["address"], json_file["city"], json_file["VAT"]))
-
-    print(querys)
 
     return querys
 
@@ -125,20 +147,26 @@ def fetch_data(query):
 
 
 def get_last_id():
-    query = "SELECT MAX(id) FROM transations;"
+    query = "SELECT MAX(id) FROM transaction;"
     result = fetch_data(query)
-    if result[0][0]:
+
+    if result is not None:
         return result[0][0]
     else:
         if init_db():
             return get_last_id()
+
         
 
 def init_db():
     db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
     db.connect()
 
-    query = "INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES (NULL, NULL, NULL, NULL);"
+    query = []
+    query.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES (NULL, NULL, NULL, NULL);")
+
+    print(query)
+
     if db.execute_querys(query):
         return True
     else: 
