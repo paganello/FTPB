@@ -84,7 +84,12 @@ def json_reformatter(payload):
     j3 = json.loads(fields[2])
 
     # Check if the date is empty, if so, add the current datetime
-    if j1["date"] == "" or j1["date"] == "NULL":
+    # If the date is in the wrong format, replace the '/' with '-'
+    if j1["date"] != "" or j1["date"] != "NULL":
+        if "/" in j1["date"]:
+            j1["date"] = replace_slash_with_dash(j1["date"])
+
+    else:
         j1["date"] = datetime_utils.get_formatted_datetime()
 
     # Separate the JSON objects and put them in a list
@@ -94,3 +99,16 @@ def json_reformatter(payload):
         jFiles.append(j3_file)
 
     return jFiles
+
+
+def replace_slash_with_dash(input_string):
+    """
+    Replaces '/' characters with '-' in the input string.
+
+    Args:
+    - input_string (str): The input string.
+
+    Returns:
+    - str: The string with '/' characters replaced by '-'.
+    """
+    return input_string.replace("/", "-")

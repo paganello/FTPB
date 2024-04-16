@@ -148,39 +148,98 @@ def update(jsons, img_name=None):
 def create_query_array(jsons, img_name=None):
     """
     Creates a list of SQL queries based on the provided JSON data.
-    
+
     Args:
     - jsons (list): List of JSON objects containing transaction information.
     - img_name (str): Name of the image file associated with the transactions, if any.
-    
+
     Returns:
     - list: List of SQL queries.
     """
+
+    # Initialize an empty list to store SQL queries
     querys = []
     transaction_ID = None
 
+    # Iterate over each JSON object in the list
     for json_file in jsons:
 
+        # Check if the JSON object contains transaction information
         if "date" in json_file and "total" in json_file and "receipt_ID" in json_file:
 
-            if img_name:
-                querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', '{}');".format(json_file["date"], json_file["total"], json_file["receipt_ID"], img_name)) 
+            # Process the values and format them for SQL insertion
+            if img_name is None:
+                receipt_file_name = "NULL"
             else:
-                querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ('{}', '{}', '{}', 'NULL');".format(json_file["date"], json_file["total"], json_file["receipt_ID"]))
+                receipt_file_name = "'{}'".format(img_name)
 
+            date = process_value(json_file.get("date", "NULL"))
+            total = process_value(json_file.get("total", "NULL"))
+            receipt_ID = process_value(json_file.get("receipt_ID", "NULL"))
+
+            # Truncate the values to fit the database constraints
+            date = date[:16+2]
+            receipt_ID = receipt_ID[:9+2]
+            receipt_file_name = receipt_file_name[:23+2]
+
+            # Construct the SQL query and append it to the list
+            querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES ({}, {}, {}, {});".format(date, total, receipt_ID, receipt_file_name)) 
+
+            # Return the list of queries (exit loop after the first transaction)
             return querys
         
+        # Check if the JSON object contains information about goods
         if "amount" in json_file and "tax" in json_file and "description" in json_file:
             if transaction_ID is None:
                 transaction_ID = get_last_id()
-            querys.append("INSERT INTO good (transaction_ID, amount, tax, description) VALUES ('{}', '{}', '{}', '{}');".format(transaction_ID, json_file["amount"], json_file["tax"], json_file["description"]))
 
+            amount = process_value(json_file.get("amount", "NULL"))
+            tax = process_value(json_file.get("tax", "NULL"))
+            description = process_value(json_file.get("description", "NULL"))
+
+            # Truncate the description to fit the database constraints
+            description = description[:64+2]
+
+            # Construct the SQL query and append it to the list
+            querys.append("INSERT INTO good (transaction_ID, amount, tax, description) VALUES ('{}', {}, {}, {});".format(transaction_ID,  amount, tax, description))
+
+        # Check if the JSON object contains information about stores
         if "name" in json_file and "address" in json_file and "city" in json_file and "VAT" in json_file:
             if transaction_ID is None:
                 transaction_ID = get_last_id()
-            querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES ('{}', '{}', '{}', '{}', '{}');".format(transaction_ID, json_file["name"], json_file["address"], json_file["city"], json_file["VAT"]))
+
+            name = process_value(json_file.get("name", "NULL"))
+            address = process_value(json_file.get("address", "NULL"))
+            city = process_value(json_file.get("city", "NULL"))
+            VAT = process_value(json_file.get("VAT", "NULL"))
+
+            # Truncate the values to fit the database constraints
+            name = name[:64+2]
+            address = address[:64+2]
+            city = city[:64+2]
+            VAT = VAT[:16+2]
+
+            # Construct the SQL query and append it to the list
+            querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES ('{}', {}, {}, {}, {});".format(transaction_ID, name, address, city, VAT))
 
     return querys
+
+
+
+def process_value(value):
+    """
+    Processes the input value for SQL insertion.
+
+    Args:
+    - value (str): The input value.
+
+    Returns:
+    - str: The processed value.
+    """
+    if value == "NULL":
+        return "NULL"
+    else:
+        return "'{}'".format(value)
 
 
 

@@ -2,7 +2,7 @@
 2 - PENDING - Report command and relatives functions must be integrated [***] 
 3 - PENDING -  integrate multithreading --> threading, asyncio
 4 - DONE - fine-tuned models support
-5 - IMPLEMENTING - add receipt img database auto storing
-6 - IMPLEMENTING - fine-tuning file must be implemented with new dataset elements
+5 - DONE - add receipt img database auto storing
+6 - DONE - fine-tuning file must be implemented with new dataset elements
 
-- update DBHandler (still not working)
+- va imposto la verifica della formattazione dalla data a chatgpt
