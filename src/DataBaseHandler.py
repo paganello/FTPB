@@ -1,4 +1,5 @@
 import mysql.connector
+from utils import dir_and_data_getters
 
 class DataBaseHandler:
     
@@ -121,7 +122,7 @@ def update(jsons, img_name=None):
     Returns:
     - bool: True if update is successful, False otherwise.
     """
-    db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
+    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
     db.connect()
 
     transaction_query = create_query_array(jsons, img_name)
@@ -253,7 +254,7 @@ def fetch_data(query):
     Returns:
     - list: List of tuples containing the fetched data, or None if an error occurs.
     """
-    db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
+    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
     db.connect()
 
     result = db.fetch_data(query)
@@ -288,7 +289,7 @@ def init_db():
     Returns:
     - bool: True if initialization is successful, False otherwise.
     """
-    db = DataBaseHandler(db_addr="localhost", db_user="PersonalFinanceBot_user", db_psw="prova123", db_name="PersonalFinanceBot")
+    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
     db.connect()
 
     query = []
