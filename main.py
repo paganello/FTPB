@@ -2,7 +2,7 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackContext, filters
 
-from src import DataBaseHandler, AzureImageProcessor, OpenaiTextProcessor
+from src import DataBaseHandler, AzureImageProcessor, OpenaiTextProcessor, GoogleServicesHandler
 from src.utils import download_utils, dir_and_data_getters, json_consistency_helper
 
 
@@ -13,8 +13,8 @@ logging.basicConfig(
 )
 
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Hi! I'm a bot that can help you with your exit. read the guide to know how to use me.")
+async def start(update: Update, context: CallbackContext):
+    await update.message.reply_text("Hi! I'm a bot that can help you with your exit. read the guide to know how to use me.")
 
 
 async def manage_text_message(update: Update, context: CallbackContext):  
@@ -75,14 +75,22 @@ async def manage_image_message(update: Update, context: CallbackContext):
     else:
         await update.message.reply_text("error")
 
+async def update_spreadsheet(update: Update, context: CallbackContext):
+    
+    d = DataBaseHandler.fetch_data("SELECT * FROM transaction JOIN good ON transaction.id = good.transaction_ID JOIN store ON transaction.id = store.transaction_ID;")
 
-            
+    key = str(dir_and_data_getters.get_settings("GOOGLE_SPREADSHEET_ID"))
+
+    GoogleServicesHandler.paste_matrix(d, key, 2, 2)
+
+
 def main():
 
     application = ApplicationBuilder().token(dir_and_data_getters.get_credentials('TELEGRAM_TOKEN')).build()
 
     # Chat commands
     application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('update_spreadsheet', update_spreadsheet))
 
     # Triggers
     application.add_handler(MessageHandler(filters.TEXT, callback= manage_text_message))
@@ -92,4 +100,4 @@ def main():
     application.run_polling()
 
 if __name__=='__main__':
-   main()
+   main() 

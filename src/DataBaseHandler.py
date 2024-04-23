@@ -1,9 +1,9 @@
 import mysql.connector
-from utils import dir_and_data_getters
+from src.utils import dir_and_data_getters
 
 class DataBaseHandler:
     
-    def __init__(self, db_psw, db_addr, db_user, db_name):
+    def __init__(self, db_addr, db_user, db_psw, db_name):
         """
         Initializes the database handler with connection parameters.
         
@@ -86,7 +86,7 @@ class DataBaseHandler:
             return False
         
     
-    def fetch_data(self, query):
+    def fetch(self, query):
         """
         Fetches data from the database based on the provided SQL query.
         
@@ -122,7 +122,13 @@ def update(jsons, img_name=None):
     Returns:
     - bool: True if update is successful, False otherwise.
     """
-    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
+    db_addr = dir_and_data_getters.get_credentials('DB_ADDRESS')
+    db_user = dir_and_data_getters.get_credentials('DB_USER')
+    db_psw = dir_and_data_getters.get_credentials('DB_PWD')
+    db_name = dir_and_data_getters.get_credentials('DB_NAME')
+
+    db = DataBaseHandler(db_addr, db_user, db_psw, db_name)
+
     db.connect()
 
     transaction_query = create_query_array(jsons, img_name)
@@ -225,10 +231,9 @@ def create_query_array(jsons, img_name=None):
 
     return querys
 
-
-
 def process_value(value):
     """
+    Used only in the create_query_array function.
     Processes the input value for SQL insertion.
 
     Args:
@@ -254,10 +259,18 @@ def fetch_data(query):
     Returns:
     - list: List of tuples containing the fetched data, or None if an error occurs.
     """
-    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
-    db.connect()
 
-    result = db.fetch_data(query)
+    db_addr = dir_and_data_getters.get_credentials('DB_ADDRESS')
+    db_user = dir_and_data_getters.get_credentials('DB_USER')
+    db_psw = dir_and_data_getters.get_credentials('DB_PWD')
+    db_name = dir_and_data_getters.get_credentials('DB_NAME')
+
+    db = DataBaseHandler(db_addr, db_user, db_psw, db_name)
+    
+    db.connect()
+    print(db.connection)
+
+    result = db.fetch(query)
     db.disconnect()
 
     return result
@@ -289,7 +302,13 @@ def init_db():
     Returns:
     - bool: True if initialization is successful, False otherwise.
     """
-    db = DataBaseHandler(dir_and_data_getters.get_credentials('DB_ADDRESS'), dir_and_data_getters.get_credentials('DB_USER'), dir_and_data_getters.get_credentials('DB_PWD'), dir_and_data_getters.get_credentials('DB_NAME'))
+    db_addr = dir_and_data_getters.get_credentials('DB_ADDRESS')
+    db_user = dir_and_data_getters.get_credentials('DB_USER')
+    db_psw = dir_and_data_getters.get_credentials('DB_PWD')
+    db_name = dir_and_data_getters.get_credentials('DB_NAME')
+
+    db = DataBaseHandler(db_addr, db_user, db_psw, db_name)
+
     db.connect()
 
     query = []
@@ -301,3 +320,5 @@ def init_db():
         return True
     else: 
         return False
+    
+
