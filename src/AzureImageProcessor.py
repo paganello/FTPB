@@ -29,10 +29,8 @@ class RemoteImageProcessor:
         self.CV_Client = ComputerVisionClient(self.endpoint, CognitiveServicesCredentials(self.api_key))
 
         response = self.CV_Client.read_in_stream(open(self.img_path, 'rb'), language='en',  raw=True)
-        print(response)
         operationLocation = response.headers["Operation-Location"]
         self.operationId = operationLocation.split("/")[-1]
-        print(self.operationId)
 
     def get_image_processing_status(self):
         """
