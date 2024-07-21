@@ -74,13 +74,10 @@ async def i_make_request(img_path):
     img_processor.start_image_processing()
 
     while img_processor.get_image_processing_status() == OperationStatusCodes.running:
-        print("Processing...")
         time.sleep(2)
 
     if (img_processor.result.status == OperationStatusCodes.succeeded):
-
-        print(img_processor.get_image_processing_result())
         return img_processor.get_image_processing_result()
     
     else:
-        return None
+        return False

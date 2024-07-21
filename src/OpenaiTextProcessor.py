@@ -55,7 +55,6 @@ class OpenaiTextProcessor:
             )
             OpenaiTextProcessor.assistant_id = assistant.id
             self.assistant = assistant
-            print(f"AssID:::: {self.assistant.id}")
 
 
     # Create the thread
@@ -66,7 +65,6 @@ class OpenaiTextProcessor:
             thread = self.client.beta.threads.create()
             OpenaiTextProcessor.thread_id = thread.id
             self.thread = thread
-            print(f"ThreadID:::: {self.thread.id}")
 
 
     # Add a message to the thread
@@ -109,8 +107,6 @@ class OpenaiTextProcessor:
             
             self.response = response
 
-            print(f"SUMMARY: {role.capitalize()} => {response}")
-
             #for msg in messages:
             #    role = msg.role
             #    content = msg.content[0].text.value
@@ -128,13 +124,11 @@ class OpenaiTextProcessor:
                     thread_id= self.thread.id,
                     run_id= self.run.id
                 )
-                print(f"RUN STATUS:: {run_status.model_dump_json(indent=4)}")
 
                 if run_status.status == "completed":
                     self.process_messages()
                     break
                 elif run_status.status == "requires_action":
-                    print("Run failed")
                     break
 
 
@@ -148,8 +142,7 @@ class OpenaiTextProcessor:
                 {"role": "user", "content": text}
             ]
         )
-        print(completion)
-
+        
         self.response = completion.choices[0].message.content
     
 

@@ -64,12 +64,10 @@ class DataBaseHandler:
         except mysql.connector.Error as err:
             return False
 
-        print(querys)
         for query in querys:
 
             #try: 
                 cursor.execute(query)
-                print(query)
 
             #except mysql.connector.Error as err:
             #    cursor.close()
@@ -268,7 +266,6 @@ def fetch_data(query):
     db = DataBaseHandler(db_addr, db_user, db_psw, db_name)
     
     db.connect()
-    print(db.connection)
 
     result = db.fetch(query)
     db.disconnect()
@@ -314,7 +311,6 @@ def init_db():
     query = []
     query.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES (NULL, NULL, NULL, NULL);")
 
-    print(query)
 
     if db.execute_querys(query):
         return True

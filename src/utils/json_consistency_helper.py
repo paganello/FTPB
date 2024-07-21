@@ -30,8 +30,6 @@ def text_slicer(text):
             "total": list[1]
         }
 
-    print(result)
-    print("text_slicer executed")
     return result
 
 
@@ -47,12 +45,10 @@ def verify_formatted_text_input(input_json):
     """
     # Check if the first element is a string
     if not isinstance(input_json["date"], str):
-        print("date is not a string")
         return False
     
     # Check if the second element is float or int
     elif not isinstance(input_json["total"], float) and not isinstance(input_json["total"], int):
-        print("total is not a float or int")
         return False
     
     else:
@@ -85,7 +81,7 @@ def json_reformatter(payload):
 
     # Check if the date is empty, if so, add the current datetime
     # If the date is in the wrong format, replace the '/' with '-'
-    if j1["date"] != "" or j1["date"] != "NULL":
+    if j1["date"] != "NULL":
         if "/" in j1["date"]:
             j1["date"] = replace_slash_with_dash(j1["date"])
 
