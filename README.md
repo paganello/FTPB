@@ -1,1 +1,2 @@
-# Personal_Finance_AI_Powered_Bot
+# Flexible Transactions Parser bot (FTPB):
+A super flexible receipt (or text) to Mysql parser, based on Azure and OpenAI APIS.  
