@@ -10,7 +10,7 @@ class TextFormatter:
         self.formatted_list = []
         for descr, status in self.list:
             # Usa gli spazi non interrompibili per il riempimento
-            padding = '\u0A00'
+            padding = ' '
             self.formatted_list.append(f"{descr}{padding} {status}")
         return "\n".join(self.formatted_list)
  
