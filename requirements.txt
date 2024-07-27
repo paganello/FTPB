@@ -1,0 +1,8 @@
+azure-cognitiveservices-vision-computervision
+azure-core
+azure-common 
+mysql-connector-python
+openai
+msrest
+python-telegram-bot
+Requests

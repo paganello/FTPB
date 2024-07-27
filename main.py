@@ -1,6 +1,6 @@
 
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackContext, filters, Updater
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackContext, filters
 
 from src import DataBaseHandler, AzureImageProcessor, OpenaiTextProcessor
 from src.utils import download_utils, dir_and_data_getters, json_consistency_helper, TextFormatter
