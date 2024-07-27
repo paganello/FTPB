@@ -4,5 +4,6 @@
 4 - DONE - fine-tuned models support
 5 - DONE - add receipt img database auto storing
 6 - DONE - fine-tuning file must be implemented with new dataset elements
+7 - DONE - telegram chat front-end
 
 - va imposto la verifica della formattazione dalla data a chatgpt
