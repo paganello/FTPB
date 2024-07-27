@@ -1,4 +1,5 @@
-import requests
+import pycurl, json
+from io import BytesIO
 from datetime import datetime
 
 # Current time getter
@@ -9,18 +10,25 @@ def get_current_datetime():
     Returns:
     - str or None: The current datetime string or None if an error occurs.
     """
-    try:
-        # Execute HTTP request to get the current time
-        response = requests.get("http://worldtimeapi.org/api/ip")
-        data = response.json()
-        datetime_str = data['datetime']
+    # Execute HTTP cURL request to get the current time (request.get can be block by worldtimeapi.org)
+    url = 'http://worldtimeapi.org/api/ip'
+    buffer = BytesIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    c.close()
+    body = buffer.getvalue()
 
-        # Remove milliseconds from the datetime string
-        return datetime_str.split('.')[0] 
-    
-    except requests.RequestException as e:
-        print("Error during HTTP request:", e)
-        return None
+    # Body is a byte string.
+    # We have to know the encoding in order to print it to a text file
+    # such as standard output.
+    date = json.loads(body.decode('iso-8859-1'))
+    datetime_str = date['datetime']
+
+    # Remove milliseconds from the datetime string
+    return datetime_str.split('.')[0] 
+
 
 
 def format_datetime(datetime_str):

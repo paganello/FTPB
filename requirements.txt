@@ -5,4 +5,5 @@ mysql-connector-python
 openai
 msrest
 python-telegram-bot
-Requests
+requests
+datetime

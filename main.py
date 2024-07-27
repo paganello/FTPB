@@ -44,7 +44,7 @@ async def manage_text_message(update: Update, context: CallbackContext):
 
         # Use GPT-3.5 --> reform text to JSON
         elaborated_text = OpenaiTextProcessor.t_make_request_using_custom_model(text)
-        print(elaborated_text)
+
         if elaborated_text is not None:
             status.add("<i>AI text elaboration :</i>", "👌")
             await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
@@ -55,9 +55,6 @@ async def manage_text_message(update: Update, context: CallbackContext):
 
         jsons = json_consistency_helper.json_reformatter(elaborated_text)
         summary_datas = jsons[0]
-
-        print(jsons)
-        print(summary_datas)
 
         DB_status = DataBaseHandler.update(jsons)
         if DB_status is not False:
