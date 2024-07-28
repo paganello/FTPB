@@ -6,4 +6,4 @@ openai
 msrest
 python-telegram-bot
 requests
-datetime
+pycurl
