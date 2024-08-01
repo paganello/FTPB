@@ -46,7 +46,7 @@ def format_datetime(datetime_str):
         dt_obj = datetime.fromisoformat(datetime_str)
 
         # Format the datetime object into the desired format
-        formatted_datetime = dt_obj.strftime('%Y-%m-%d %H:%M')
+        formatted_datetime = dt_obj.strftime('%Y-%m-%d %H:%M:%S')
         return formatted_datetime
     
     except ValueError as e:

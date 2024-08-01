@@ -1,6 +1,6 @@
 azure-cognitiveservices-vision-computervision
 azure-core
-azure-common 
+azure-common
 mysql-connector-python
 openai
 msrest
