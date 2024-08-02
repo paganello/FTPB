@@ -1,6 +1,6 @@
 CREATE TABLE transaction (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    date CHAR(16) NULL,
+    date DATETIME NOT NULL,
     total FLOAT NULL,
     receipt_ID CHAR(9) NULL,
     receipt_file_name CHAR(23) NULL

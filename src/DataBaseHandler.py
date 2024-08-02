@@ -109,7 +109,7 @@ class DataBaseHandler:
 
 
 
-def update(jsons, img_name=None):
+def update(input_jsons, img_name=None):
     """
     Updates the database with the provided JSON data.
     
@@ -129,12 +129,12 @@ def update(jsons, img_name=None):
 
     db.connect()
 
-    transaction_query = create_query_array(jsons, img_name)
+    transaction_query = create_query_array(input_jsons, img_name)
     
     if db.execute_querys(transaction_query):
 
-        jsons.pop(0)
-        querys = create_query_array(jsons)
+        input_jsons.pop(0)
+        querys = create_query_array(input_jsons)
 
         if db.execute_querys(querys):
             db.disconnect()
@@ -150,7 +150,7 @@ def update(jsons, img_name=None):
     
 
 
-def create_query_array(jsons, img_name=None):
+def create_query_array(input_jsons, img_name=None):
     """
     Creates a list of SQL queries based on the provided JSON data.
 
@@ -167,7 +167,7 @@ def create_query_array(jsons, img_name=None):
     transaction_ID = None
 
     # Iterate over each JSON object in the list
-    for json_file in jsons:
+    for json_file in input_jsons:
 
         # Check if the JSON object contains transaction information
         if "date" in json_file and "total" in json_file and "receipt_ID" in json_file:
@@ -183,7 +183,7 @@ def create_query_array(jsons, img_name=None):
             receipt_ID = process_value(json_file.get("receipt_ID", "NULL"))
 
             # Truncate the values to fit the database constraints
-            date = date[:16+2]
+            date = date[:19+2]
             receipt_ID = receipt_ID[:9+2]
             receipt_file_name = receipt_file_name[:23+2]
 
