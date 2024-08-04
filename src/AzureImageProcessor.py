@@ -78,4 +78,4 @@ async def i_make_request(img_path):
         return img_processor.get_image_processing_result()
     
     else:
-        return False
+        return BaseException("operation failed")

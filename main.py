@@ -35,7 +35,7 @@ async def manage_text_message(update: Update, context: CallbackContext):
     if formatting_status is not False:
         # if correct try to update the DB
         DB_status = DataBaseHandler.update(json_file)
-        update.message.reply_text(TextFormatter.printSummary(json_file, DB_status))
+        await update.message.reply_text(TextFormatter.printSummary(json_file, DB_status))
 
     else:
         status.add("<i>AI text elaboration :</i>", "⌛")
@@ -43,7 +43,7 @@ async def manage_text_message(update: Update, context: CallbackContext):
         status.remove_last()
 
         # Use GPT-3.5 --> reform text to JSON
-        elaborated_text = OpenaiTextProcessor.t_make_request_using_custom_model(text)
+        elaborated_text = await OpenaiTextProcessor.t_make_request_using_custom_model(text)
 
         if elaborated_text is not None:
             status.add("<i>AI text elaboration :</i>", "👌")
@@ -88,22 +88,23 @@ async def manage_image_message(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id
 
     # Download the file
-    download_status = download_utils.download_file(file.file_path, last_img_dir)
-    if download_status is not False:
+    try: 
+        download_utils.download_file(file.file_path, last_img_dir)
+
         status.add("<i>Image received :</i>", "👌")
-        context.user_data['msg'] = await context.bot.send_message(chat_id=chat_id, text=status.format(), parse_mode='HTML')    # Save the message info to edit it later
-    else:
+        context.user_data['msg'] = await context.bot.send_message(chat_id=chat_id, text=status.format(), parse_mode='HTML')
+    except:
         status.add("<i>Image received :</i>", "❌")
-        await context.bot.send_message(chat_id=chat_id, text=status.format())
+        await context.bot.send_message(chat_id=chat_id, text=status.format(), parse_mode='HTML')
         return
     
     # Image to text conversion
-    image_to_text= await AzureImageProcessor.i_make_request(last_img_dir)
-    if image_to_text is not False:
+    try: 
+        image_to_text= await AzureImageProcessor.i_make_request(last_img_dir)
+
         status.add("<i>Translation :</i>", "👌")
         await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
-    else:
-        #print(context.user_data)
+    except:
         status.add("<i>Translation :</i>", "❌")
         await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
         return
@@ -111,16 +112,21 @@ async def manage_image_message(update: Update, context: CallbackContext):
     # Start image elaboration
     elaborated_text = OpenaiTextProcessor.t_make_request_using_custom_model(image_to_text)
 
-    jsons = json_consistency_helper.json_reformatter(elaborated_text)
+    try:
+        jsons = json_consistency_helper.json_reformatter(elaborated_text)
+    except:
+        status.add("<i>AI text elaboration :</i>", "❌")
+        await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
+        return
+    
     summary_datas = jsons[0]
 
-    DB_status = DataBaseHandler.update(jsons, last_img_name)
-    if DB_status is not False:
-        status.add("<i>DB Updated :</i>", "👌")
-        await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
-    else:
+    try: 
+        DB_status = DataBaseHandler.update(jsons, last_img_name)
+    except:
         status.add("<i>DB_Updated :</i>", "❌")
         await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
+        return
     
     await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=TextFormatter.printSummary(summary_datas, DB_status), parse_mode='HTML')
     
