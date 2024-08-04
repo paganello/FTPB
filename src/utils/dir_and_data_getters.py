@@ -57,3 +57,13 @@ def create_timebased_img_name():
     - str: The image name.
     """
     return str(datetime_utils.get_current_datetime()) + ".jpg"
+
+
+def remove_img(img_dir):
+    """
+    Removes an image from the filesystem.
+
+    Args:
+    - img_dir (str): The image directory.
+    """
+    os.remove(img_dir)

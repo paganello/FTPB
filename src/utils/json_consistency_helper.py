@@ -1,59 +1,6 @@
 import json
 from src.utils import datetime_utils
 
-# Reformat and input verifier
-# Only "[date] [total]" or "[total]" are accepted
-
-# Text format verifier
-def text_slicer(text):
-    """
-    Slices the input text into date and total, returns a dictionary.
-
-    Args:
-    - text (str): The input text.
-
-    Returns:
-    - dict: A dictionary containing date and total.
-    """
-    list = text.split()
-
-    # If there are less than 2 words, add empty strings for the missing elements
-    if len(list) < 2:
-        if float(list[0]):
-            result = {
-                "date": datetime_utils.get_formatted_datetime(),
-                "total": list[0]
-            }
-    else:
-        result = {
-            "date": list[0],
-            "total": list[1]
-        }
-
-    return result
-
-
-def verify_formatted_text_input(input_json):
-    """
-    Verifies the format of the input JSON.
-
-    Args:
-    - input_json (dict): The input JSON object.
-
-    Returns:
-    - bool: True if the format is correct, False otherwise.
-    """
-    # Check if the first element is a string
-    if not isinstance(input_json["date"], str):
-        return False
-    
-    # Check if the second element is float or int
-    elif not isinstance(input_json["total"], float) and not isinstance(input_json["total"], int):
-        return False
-    
-    else:
-        return True
-    
 
 def json_reformatter(payload):
     """
