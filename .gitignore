@@ -4,6 +4,7 @@ src/__pycache__/
 src/utils/__pycache__/
 src/configs/
 src/tmp/
+venv/
 
 credentials.json
 settings.json
