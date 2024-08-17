@@ -6,5 +6,5 @@ src/configs/
 src/tmp/
 venv/
 
-credentials.json
-settings.json
+credentials.py
+

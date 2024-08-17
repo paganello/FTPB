@@ -110,13 +110,13 @@ async def manage_image_message(update: Update, context: CallbackContext):
     
     summary_datas = jsons[0]
 
-    try: 
-        DB_status = DataBaseHandler.update(jsons, last_img_name)
-    except:
-        dir_and_data_getters.remove_img(last_img_dir)
-        status.add("<i>DB_Updated :</i>", "❌")
-        await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
-        return
+    #try: 
+    DB_status = DataBaseHandler.update(jsons, last_img_name)
+    #except:
+        #dir_and_data_getters.remove_img(last_img_dir)
+        #status.add("<i>DB_Updated :</i>", "❌")
+        #await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
+        #return
     
     await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=TextFormatter.printSummary(summary_datas, DB_status), parse_mode='HTML')
     
