@@ -177,23 +177,24 @@ def create_query_array(input_jsons, img_name=None):
 
             # Process the values and format them for SQL insertion
             if img_name is None:
-                receipt_file_name = "NULL"
+                #receipt_file_name = "NULL"
+                receipt_file_name = None
             else:
                 #receipt_file_name = "'{}'".format(img_name)
                 receipt_file_name = img_name
 
-            #date = process_value(json_file.get("date", "NULL"))
-            #total = process_value(json_file.get("total", "NULL"))
-            #receipt_ID = process_value(json_file.get("receipt_ID", "NULL"))
+            date = process_value(json_file.get("date", "NULL"))
+            total = process_value(json_file.get("total", "NULL"))
+            receipt_ID = process_value(json_file.get("receipt_ID", "NULL"))
 
-            date = json_file.get("date", "NULL")
-            total = json_file.get("total", "NULL")
-            receipt_ID = json_file.get("receipt_ID", "NULL")
+            #date = json_file.get("date", "NULL")
+            #total = json_file.get("total", "NULL")
+            #receipt_ID = json_file.get("receipt_ID", "NULL")
 
-            # Truncate the values to fit the database constraints
-            date = date[:19+2]
-            receipt_ID = receipt_ID[:9+2]
-            receipt_file_name = receipt_file_name[:23+2]
+            # Truncate the values to fit the database constraints, if the variable value if None, it will be conserved
+            date = date[:19] if date else None
+            receipt_ID = receipt_ID[:9] if receipt_ID else None
+            receipt_file_name = receipt_file_name[:23] if receipt_file_name else None
 
             # Construct the SQL query and append it to the list
             querys.append("INSERT INTO transaction (date, total, receipt_ID, receipt_file_name) VALUES (%s, %s, %s, %s);") 
@@ -207,16 +208,16 @@ def create_query_array(input_jsons, img_name=None):
             if transaction_ID is None:
                 transaction_ID = get_last_id()
 
-            #amount = process_value(json_file.get("amount", "NULL"))
-            #tax = process_value(json_file.get("tax", "NULL"))
-            #description = process_value(json_file.get("description", "NULL"))
+            amount = process_value(json_file.get("amount", "NULL"))
+            tax = process_value(json_file.get("tax", "NULL"))
+            description = process_value(json_file.get("description", "NULL"))
 
-            amount = json_file.get("amount", "NULL")
-            tax = json_file.get("tax", "NULL")
-            description = json_file.get("description", "NULL")
+            #amount = json_file.get("amount", "NULL")
+            #tax = json_file.get("tax", "NULL")
+            #description = json_file.get("description", "NULL")
 
-            # Truncate the description to fit the database constraints
-            description = description[:64+2]
+            # Truncate the description to fit the database constraints, if the variable value if None, it will be conserved
+            description = description[:64] if description else None
 
             # Construct the SQL query and append it to the list
             querys.append("INSERT INTO good (transaction_ID, amount, tax, description) VALUES (%s, %s, %s, %s);")
@@ -227,21 +228,21 @@ def create_query_array(input_jsons, img_name=None):
             if transaction_ID is None:
                 transaction_ID = get_last_id()
 
-            #name = process_value(json_file.get("name", "NULL"))
-            #address = process_value(json_file.get("address", "NULL"))
-            #city = process_value(json_file.get("city", "NULL"))
-            #VAT = process_value(json_file.get("VAT", "NULL"))
+            name = process_value(json_file.get("name", "NULL"))
+            address = process_value(json_file.get("address", "NULL"))
+            city = process_value(json_file.get("city", "NULL"))
+            VAT = process_value(json_file.get("VAT", "NULL"))
 
-            name = json_file.get("name", "NULL")
-            address = json_file.get("address", "NULL")
-            city = json_file.get("city", "NULL")
-            VAT = json_file.get("VAT", "NULL")
+            #name = json_file.get("name", "NULL")
+            #address = json_file.get("address", "NULL")
+            #city = json_file.get("city", "NULL")
+            #VAT = json_file.get("VAT", "NULL")
 
-            # Truncate the values to fit the database constraints
-            name = name[:64+2]
-            address = address[:64+2]
-            city = city[:64+2]
-            VAT = VAT[:16+2]
+            # Truncate the values to fit the database constraints, if the variable value if None, it will be conserved
+            name = name[:64] if name else None
+            address = address[:64] if address else None
+            city = city[:64] if city else None
+            VAT = VAT[:16] if VAT else None
 
             # Construct the SQL query and append it to the list
             querys.append("INSERT INTO store (transaction_ID, name, address, city, VAT) VALUES (%s, %s, %s, %s, %s);")
@@ -249,7 +250,7 @@ def create_query_array(input_jsons, img_name=None):
 
     return querys, data
 
-#def process_value(value):
+def process_value(value):
     """
     Used only in the create_query_array function.
     Processes the input value for SQL insertion.
@@ -260,10 +261,12 @@ def create_query_array(input_jsons, img_name=None):
     Returns:
     - str: The processed value.
     """
-#    if value == "NULL":
-#        return "NULL"
-#    else:
-#        return "'{}'".format(value)
+    if value == "NULL":
+        #return "NULL"
+        return None
+    else:
+        #return "'{}'".format(value)
+        return value
 
 
 
