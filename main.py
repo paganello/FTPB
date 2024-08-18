@@ -42,16 +42,29 @@ async def manage_text_message(update: Update, context: CallbackContext):
         await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
         return
 
-    jsons = json_consistency_helper.json_reformatter(elaborated_text)
+    try:
+        jsons = json_consistency_helper.json_reformatter(elaborated_text)
+    except Exception as e:
+        status.add("<i>AI text elaboration :</i>", "❌")
+        await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
+
+        text = str(e)
+        await context.bot.send_message(chat_id=chat_id, text=f"error: {text}", parse_mode='HTML')
+
+        return
+    
     summary_datas = jsons[0]
 
-    DB_status = DataBaseHandler.update(jsons)
-    if DB_status is not False:
-        status.add("<i>DB Updated :</i>", "👌")
-        await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
-    else:
+    try:
+        DB_status = DataBaseHandler.update(jsons)
+    except Exception as e:
         status.add("<i>DB_Updated :</i>", "❌")
         await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=status.format(), parse_mode='HTML')
+
+        text = str(e)
+        await context.bot.send_message(chat_id=chat_id, text=f"error: {text}", parse_mode='HTML')
+
+        return
     
     await context.bot.edit_message_text(chat_id=chat_id, message_id=context.user_data['msg'].message_id, text=TextFormatter.printSummary(summary_datas, DB_status), parse_mode='HTML')
     
